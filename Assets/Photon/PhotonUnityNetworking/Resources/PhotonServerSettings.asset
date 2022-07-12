@@ -43,6 +43,15 @@ MonoBehaviour:
   - RPC_SentTeam
   - RPC_SetTagger
   - UpdateTagStatus
+  - ChangeTagStatus
+  - ExchangeTagStatus
+  - TagAnotherPlayer
+  - SetFree
+  - SetTagger
+  - SwapTagStatus
+  - UpdateProperties
+  - SetFreeRPC
+  - SetTaggerRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

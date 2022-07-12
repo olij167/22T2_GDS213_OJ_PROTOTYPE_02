@@ -11,7 +11,7 @@ public class SpawnPlayers : MonoBehaviourPun
 
     public int playerCount;
 
-    public TextMeshProUGUI textBox;
+    //public TextMeshProUGUI textBox;
 
 
     public float minX, maxX, minY, maxY, minZ, maxZ;

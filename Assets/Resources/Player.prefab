@@ -462,7 +462,6 @@ GameObject:
   - component: {fileID: 6210415587261378977}
   - component: {fileID: -4361183178361534301}
   - component: {fileID: 4668014079439716720}
-  - component: {fileID: 362454386950422484}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -567,8 +566,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 3842655611305234475}
   baseSpeed: 5
-  sprintSpeed: 7.5
-  jumpForce: 4
+  sprintSpeed: 15
+  jumpForce: 6
   isGrounded: 0
   moveDirection: {x: 0, y: 0, z: 0}
   gravScale: 1
@@ -683,21 +682,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.7
-  m_Height: 2.2
+  m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &362454386950422484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3842655611993775449}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f18298ccd0c38e4b905410e79cf94db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Center: {x: 0, y: 0.58, z: 0}
 --- !u!1 &4458465739644417826
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,12 +10,17 @@ PrefabInstance:
     - target: {fileID: 1281820321116793830, guid: 2c32385a867dc9847b4e2967b650fffb,
         type: 3}
       propertyPath: ObservedComponents.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3842655611993775449, guid: 2c32385a867dc9847b4e2967b650fffb,
         type: 3}
       propertyPath: m_Name
       value: Player 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842655611993775450, guid: 2c32385a867dc9847b4e2967b650fffb,
+        type: 3}
+      propertyPath: jumpForce
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3842655611993775452, guid: 2c32385a867dc9847b4e2967b650fffb,
         type: 3}

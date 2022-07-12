@@ -4,34 +4,37 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class TagStatus : MonoBehaviourPunCallbacks
 {
 
     public TextMeshProUGUI tagStatusText;
 
-    [SerializeField] bool isTagger = false;
+    Hashtable tagProperties = new Hashtable();
 
-    ExitGames.Client.Photon.Hashtable tagProperties = new ExitGames.Client.Photon.Hashtable();
+    bool tagStatus = false;
 
+    //GameObject tagObject;
+    //OwnershipTransfer ownership;
 
     private void Start()
     {
-        tagProperties["tagStatus"] = false;
-        isTagger = false;
+        //tagObject = GameObject.FindGameObjectWithTag("TagObject");
+        //ownership = tagObject.GetComponent<OwnershipTransfer>();
 
-        PhotonNetwork.SetPlayerCustomProperties(tagProperties);
+        tagProperties["tagStatus"] = tagStatus;
+
 
         if (PhotonNetwork.IsMasterClient)
         {
+            //ownership.ChangeOwner();
+            //Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
+
             SetRandomTaggedPlayer();
         }
 
-        //UpdateTagStatus(photonView.Owner);
-
-        //UpdateTagStatus(PhotonNetwork.LocalPlayer);
-
-
+        PhotonNetwork.SetPlayerCustomProperties(tagProperties);
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
@@ -42,10 +45,19 @@ public class TagStatus : MonoBehaviourPunCallbacks
         }
     }
 
+
     public void UpdateTagStatus(Player player)
     {
-       
+        //if (tagObject.GetPhotonView().AmOwner)
+        //{
+        //    tagStatus = true;
+        //}
+        //else
+        //{
+        //    tagStatus = false;
+        //}
         switch (player.CustomProperties["tagStatus"])
+        //switch (tagStatus)
         {
             case false:
                 {
@@ -69,49 +81,90 @@ public class TagStatus : MonoBehaviourPunCallbacks
                 }
         }
 
-        //Debug.Log("[" + player.NickName + "] is the tagger? ... " + player.CustomProperties["tagStatus"] + " \n (0 = no, 1 = yes)");
-
-
-        Debug.Log("status for '" + player.NickName + "' have been updated");
+        //Debug.Log("status for '" + player.NickName + "' has been updated \n Is the tagger? ... " + player.CustomProperties["tagStatus"]);
 
     }
+
 
     void SetRandomTaggedPlayer()
     {
 
-        int rand = Random.Range(0, PhotonNetwork.PlayerList.Length);
+        tagStatus = true;
 
-        PhotonNetwork.PlayerList[rand].CustomProperties["tagStatus"] = true;
+        tagProperties["tagStatus"] = tagStatus;
+        //ownership.ChangeOwner();
 
-        tagProperties["tagStatus"] = PhotonNetwork.PlayerList[rand].CustomProperties["tagStatus"];
-
+        
         PhotonNetwork.SetPlayerCustomProperties(tagProperties);
-
-        if (photonView.Owner == PhotonNetwork.PlayerList[rand])
-        {
-            isTagger = true;
-        }
-
         //Debug.Log("Tagger is: " + PhotonNetwork.PlayerList[rand].NickName);
 
     }
 
-    private void OnCollisionEnter(Collision other)
+
+    [PunRPC]
+    public void SetTaggerRPC(Player player)
     {
-        if (other.gameObject.name.Contains("Player") && isTagger)
+        if (player.IsLocal)
         {
-            other.gameObject.GetComponent<PhotonView>().Owner.CustomProperties["tagStatus"] = true;
-            tagProperties["tagStatus"] = false;
+            player.CustomProperties["tagStatus"] = true;
+
+            tagProperties["tagStatus"] = player.CustomProperties["tagStatus"];
 
             PhotonNetwork.SetPlayerCustomProperties(tagProperties);
 
-            //UpdateTagStatus(other.gameObject.GetComponent<PhotonView>().Owner);
-            //UpdateTagStatus(photonView.Owner);
+            Debug.Log(player.NickName + " is now a tagger");
 
-            Debug.Log("Tagger has changed");
         }
-
-        
     }
 
+    [PunRPC]
+    public void SetFreeRPC(Player player)
+    {
+        if (player.IsLocal)
+        {
+            player.CustomProperties["tagStatus"] = false;
+
+            tagProperties["tagStatus"] = player.CustomProperties["tagStatus"];
+
+            PhotonNetwork.SetPlayerCustomProperties(tagProperties);
+
+            Debug.Log(player.NickName + " is now free");
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (photonView.IsMine)
+        {
+            //if (other.gameObject.CompareTag("Player"))
+            //{
+            //    if (other.gameObject.GetPhotonView().Owner.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            //    {
+            //        ownership.ChangeOwner();
+            //    }
+            //}
+            if (photonView.Owner.CustomProperties["tagStatus"] != null)
+            {
+                //Player tagger = photonView.Owner;
+
+                if (other.gameObject.CompareTag("Player"))
+                {
+                    if ((bool)photonView.Owner.CustomProperties["tagStatus"])
+                    {
+                        Player player = other.gameObject.GetComponent<PhotonView>().Owner;
+
+                        photonView.RPC("SetFreeRPC", RpcTarget.AllBuffered, photonView.Owner);
+
+                        //Debug.Log("collision player tag status = " + (bool)player.CustomProperties["tagStatus"] + "\n (should be false)");
+
+                        photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, player);
+
+                        Debug.Log("collision player tag status = " + (bool)player.CustomProperties["tagStatus"] + "\n (should be true)");
+
+                        //PhotonNetwork.SetPlayerCustomProperties(tagProperties);
+                    }
+                }
+            }
+        }
+    }
 }

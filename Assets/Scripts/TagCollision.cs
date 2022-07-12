@@ -2,30 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class TagCollision : MonoBehaviourPunCallbacks
 {
-    private TagStatus tagStatus;
-    void Start()
-    {
-        tagStatus = GetComponent<TagStatus>();
-    }
+    TagStatus tagStatus;
 
-    private void OnCollisionEnter(Collision other)
+
+    private void OnTriggerEnter(Collider other)
     {
         if (photonView.IsMine)
         {
-            if (other.gameObject.name.Contains("Player") && (bool)PhotonNetwork.LocalPlayer.CustomProperties["tagStatus"])
+            if (photonView.Owner.CustomProperties["tagStatus"] != null)
             {
-                other.gameObject.GetComponent<PhotonView>().Owner.CustomProperties["tagStatus"] = true;
-                photonView.Owner.CustomProperties["tagStatus"] = false;
+                if (other.gameObject.CompareTag("Player"))
+                {
+                    if ((bool)photonView.Owner.CustomProperties["tagStatus"])
+                    {
+                        Player player = other.gameObject.GetComponent<PhotonView>().Owner;
 
-                tagStatus.UpdateTagStatus(other.gameObject.GetComponent<PhotonView>().Owner);
-                tagStatus.UpdateTagStatus(photonView.Owner);
+                        other.gameObject.GetComponent<PhotonView>().RPC("SetTagger", RpcTarget.All, player);
 
-                Debug.Log("Tagger has changed");
+                        photonView.RPC("SetFree", RpcTarget.All, photonView.Owner);
+                    }
+
+                }
             }
 
         }
     }
+
 }
