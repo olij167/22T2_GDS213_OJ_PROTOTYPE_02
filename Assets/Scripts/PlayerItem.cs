@@ -29,6 +29,7 @@ public class PlayerItem : MonoBehaviourPunCallbacks
         //playerProperties["tagStatus"] = "Free";
         backgroundImage.color = playerColour;
 
+
         PhotonNetwork.SetPlayerCustomProperties(playerProperties);
     }
 
@@ -36,6 +37,7 @@ public class PlayerItem : MonoBehaviourPunCallbacks
     {
         playerName.text = _player.NickName;
         player = _player;
+        //playerColour = playerColoursArray[(int)_player.CustomProperties["playerColour"]];
 
         UpdatePlayerItem(player);
     }
@@ -95,7 +97,11 @@ public class PlayerItem : MonoBehaviourPunCallbacks
         {
             playerProperties["playerColour"] = 0;
         }
+
+        //SetPlayerInfo(player);
+        //ApplyLocalChanges();
     }
+
 
     //[PunRPC]
     //void RPC_GetTeam()

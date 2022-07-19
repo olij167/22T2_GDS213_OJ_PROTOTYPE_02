@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -8,33 +9,37 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class TagStatus : MonoBehaviourPunCallbacks
 {
+    PlayerStartPrompt startPrompt;
 
     public TextMeshProUGUI tagStatusText;
 
+    public Image tagImpactImage;
+
     Hashtable tagProperties = new Hashtable();
 
-    bool tagStatus = false;
+    public bool tagStatus = false, justTagged;
 
-    //GameObject tagObject;
-    //OwnershipTransfer ownership;
+    public float tagCooldown;
 
     private void Start()
     {
         //tagObject = GameObject.FindGameObjectWithTag("TagObject");
         //ownership = tagObject.GetComponent<OwnershipTransfer>();
+        startPrompt = GameObject.FindGameObjectWithTag("RunText").GetComponent<PlayerStartPrompt>();
 
         tagProperties["tagStatus"] = tagStatus;
-
 
         if (PhotonNetwork.IsMasterClient)
         {
             //ownership.ChangeOwner();
-            //Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
+            Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
 
-            SetRandomTaggedPlayer();
+            SetTagger(randomPlayer);
         }
 
         PhotonNetwork.SetPlayerCustomProperties(tagProperties);
+
+        startPrompt.SetText();
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
@@ -62,13 +67,15 @@ public class TagStatus : MonoBehaviourPunCallbacks
             case false:
                 {
                     tagStatusText.text = "Free";
+                    tagStatus = false;
                     tagStatusText.color = Color.green;
                     break;
                 }
 
             case true:
                 {
-                    tagStatusText.text = "Tagger";
+                    tagStatusText.text = "IT";
+                    tagStatus = true;
                     tagStatusText.color = Color.red;
                     break;
                 }
@@ -86,18 +93,9 @@ public class TagStatus : MonoBehaviourPunCallbacks
     }
 
 
-    void SetRandomTaggedPlayer()
+    void SetTagger(Player player)
     {
-
-        tagStatus = true;
-
-        tagProperties["tagStatus"] = tagStatus;
-        //ownership.ChangeOwner();
-
-        
-        PhotonNetwork.SetPlayerCustomProperties(tagProperties);
-        //Debug.Log("Tagger is: " + PhotonNetwork.PlayerList[rand].NickName);
-
+        photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, player);
     }
 
 
@@ -109,6 +107,8 @@ public class TagStatus : MonoBehaviourPunCallbacks
             player.CustomProperties["tagStatus"] = true;
 
             tagProperties["tagStatus"] = player.CustomProperties["tagStatus"];
+
+            startPrompt.SetText();
 
             PhotonNetwork.SetPlayerCustomProperties(tagProperties);
 
@@ -157,14 +157,44 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
                         //Debug.Log("collision player tag status = " + (bool)player.CustomProperties["tagStatus"] + "\n (should be false)");
 
-                        photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, player);
+                        this.Invoke(() => SetTagger(player), tagCooldown);
+
+                        //photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, player);
 
                         Debug.Log("collision player tag status = " + (bool)player.CustomProperties["tagStatus"] + "\n (should be true)");
+
+                        startPrompt.SetText();
+                        //photonView.RPC("SetText", RpcTarget.AllBuffered);
+
+                        photonView.RPC("TagImpactEffect", RpcTarget.All);
 
                         //PhotonNetwork.SetPlayerCustomProperties(tagProperties);
                     }
                 }
             }
         }
+
+        // play tag sound effect
+
     }
+
+    [PunRPC]
+    public void TagImpactEffect()
+    {
+        startPrompt.displayImage = true;
+    }
+
 }
+    public static class Utility
+    {
+        public static void Invoke(this MonoBehaviour mb, System.Action f, float delay)
+        {
+            mb.StartCoroutine(InvokeRoutine(f, delay));
+        }
+
+        private static IEnumerator InvokeRoutine(System.Action f, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            f();
+        }
+    }

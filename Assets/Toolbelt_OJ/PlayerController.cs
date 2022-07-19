@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Cinemachine;
 
 namespace Toolbelt_OJ
 {
@@ -10,8 +11,9 @@ namespace Toolbelt_OJ
     {
         PhotonView view;
         public Camera cam;
+        public CinemachineVirtualCamera vCam;
         public float baseSpeed = 5f, sprintSpeed;
-        float moveSpeed;
+        [HideInInspector] public float moveSpeed;
         //public Rigidbody theRB;
         public float jumpForce = 4f;
         public bool isGrounded;
@@ -35,6 +37,7 @@ namespace Toolbelt_OJ
             {
                 //Destroy(cam);
                 cam.enabled = false;
+                vCam.enabled = false;
                 cam.GetComponent<AudioListener>().enabled = false;
             }
         }
@@ -60,18 +63,20 @@ namespace Toolbelt_OJ
 
                 if (controller.isGrounded)
                 {
-                    moveDirection.y = 0f;
+                    //moveDirection.y = 0f;
                     if (Input.GetButtonDown("Jump"))
                     {
                         moveDirection.y = jumpForce;
                     }
+
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        moveSpeed = sprintSpeed;
+                    }
+                    else moveSpeed = baseSpeed;
                 }
 
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    moveSpeed = sprintSpeed;
-                }
-                else moveSpeed = baseSpeed;
+                
 
 
                 moveDirection.y = moveDirection.y + (Physics.gravity.y * gravScale * Time.deltaTime);
@@ -80,22 +85,10 @@ namespace Toolbelt_OJ
             
         }
 
-        //private void OnCollisionEnter(Collision collision)
-        //{
-        //    if (collision.gameObject.layer.Equals(3))
-        //    {
-        //        isGrounded = true;
-        //    }
-        //    //else isGrounded = false;
-        //    Debug.Log("player grounded = " + isGrounded);
-        //}
-
-        //private void OnCollisionExit(Collision collision)
-        //{
-        //    if (collision.gameObject.layer.Equals(3))
-        //    {
-        //        isGrounded = false;
-        //    }
-        //}
+        [PunRPC]
+        public void Teleport(GameObject player, GameObject location)
+        {
+            player.transform.position = location.transform.position;
+        }
     }
 }

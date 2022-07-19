@@ -7,8 +7,9 @@ using TMPro;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    public TMP_InputField createInput;
+    public TMP_InputField createInput, gameTimerInput;
 
+    public SetGameLength gameLength;
     public GameObject lobbyPanel, roomPanel;
     public TextMeshProUGUI roomName;
 
@@ -32,6 +33,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomPanel.SetActive(false);
 
         PhotonNetwork.JoinLobby();
+
+        createInput.characterLimit = 12;
+        gameTimerInput.contentType = TMP_InputField.ContentType.DecimalNumber;
     }
 
     public void CreateRoom()
@@ -140,18 +144,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
             playButton.SetActive(true);
+            gameTimerInput.gameObject.SetActive(true);
         }
         else
         {
             playButton.SetActive(false);
+            gameTimerInput.gameObject.SetActive(false);
         }
 
     }
 
     public void OnClickPlayButton()
     {
-        PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.LoadLevel("TagGame");
+        if (gameTimerInput.text.Length >= 2)
+        {
+            gameLength.gameTimer = System.Convert.ToInt32(gameTimerInput.text);
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.LoadLevel("TagGame");
+        }
     }
 
     //public void UpdateTeam()

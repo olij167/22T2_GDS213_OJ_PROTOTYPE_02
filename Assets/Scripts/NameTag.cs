@@ -10,16 +10,16 @@ public class NameTag : MonoBehaviourPun
 
     void Start()
     {
-        SetNameTag();
-        //if (photonView.IsMine)
-        //{
-        //    //playerName.enabled = false;
-        //    return;
-        //}
-        //else
-        //{
-        //    SetNameTag();
-        //}
+        //SetNameTag();
+        if (photonView.IsMine)
+        {
+            //playerName.enabled = false;
+            return;
+        }
+        else
+        {
+            SetNameTag();
+        }
     }
 
     void SetNameTag() => playerName.text = photonView.Owner.NickName;

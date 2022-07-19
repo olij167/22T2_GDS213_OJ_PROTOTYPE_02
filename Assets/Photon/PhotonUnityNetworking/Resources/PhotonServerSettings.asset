@@ -52,6 +52,11 @@ MonoBehaviour:
   - UpdateProperties
   - SetFreeRPC
   - SetTaggerRPC
+  - SendGameTime
+  - SendGameTimer
+  - SetText
+  - Teleport
+  - TagImpactEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: -4361183178361534301, guid: 2c32385a867dc9847b4e2967b650fffb,
         type: 3}
       propertyPath: tagStatus
-      value: 
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1281820321116793830, guid: 2c32385a867dc9847b4e2967b650fffb,
         type: 3}
