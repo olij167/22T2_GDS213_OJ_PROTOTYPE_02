@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 0c90ef87e6942c644ad3efed07d40df2
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Fredoka dingbats
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 12d6f0484adc22b4c8dea4657e8b5797, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

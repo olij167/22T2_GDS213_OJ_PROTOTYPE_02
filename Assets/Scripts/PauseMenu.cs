@@ -5,25 +5,29 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PauseMenu : MonoBehaviourPunCallbacks
 {
-    public GameObject pauseMenu, playerListUI, playerListItem;
+    public GameObject pauseMenu, playerListItem;
+    public Transform playerListUI;
 
-    public List<GameObject> playerListItemList;
+    public List<PlayerListItem> playerListItemList;
 
     UnityEvent togglePauseMenu;
 
     public bool pauseMenuEnabled;
 
-    public Color[] playerColoursArray;
+   // private GridLayoutGroup gridLayout;
 
+    public GameTimer gameTimer;
 
     void Start()
     {
         //playerName = playerListItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         //playerTagStatus = playerListItem.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+
+        //gridLayout = playerListUI.GetComponent<GridLayoutGroup>();
 
         if (togglePauseMenu == null)
         {
@@ -34,93 +38,95 @@ public class PauseMenu : MonoBehaviourPunCallbacks
 
         togglePauseMenu.Invoke();
 
-        LogPlayerList();
+        //LogPlayerList();
 
-        if (photonView.Owner.CustomProperties["tagStatus"] != null)
-        {
-            UpdatePlayerListTagStatus();
-        }
+        //if (photonView.Owner.CustomProperties["tagStatus"] != null)
+        //{
+        //    UpdatePlayerListTagStatus();
+        //}
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (!gameTimer.gameOver)
         {
-            togglePauseMenu.Invoke();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                togglePauseMenu.Invoke();
+            }
+        }
+        else
+        {
+            pauseMenu.SetActive(false);
         }
 
     }
 
     public void TogglePauseMenu()
     {
-        switch (pauseMenuEnabled)
-        {
-            case true:
-                {
-                    pauseMenu.SetActive(false);
-                    Cursor.lockState = CursorLockMode.Locked;
-                    break;
-                }
 
-            case false:
-                {
-                    pauseMenu.SetActive(true);
-                    Cursor.lockState = CursorLockMode.Confined;
-                    break;
-                }
+        if (pauseMenu.activeSelf)
+        {
+            pauseMenu.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+
         }
+
+        else
+        {
+            pauseMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.Confined;
+
+        }
+
     }
 
-    public void LogPlayerList()
+    public void UpdatePlayerListUI()
     {
-        foreach (Player player in PhotonNetwork.PlayerList)
+        foreach (PlayerListItem item in playerListItemList)
         {
-            GameObject newPlayerListItem = Instantiate(playerListItem, playerListUI.transform);
-
-            if (!playerListItemList.Contains(newPlayerListItem))
-            {
-                playerListItemList.Add(newPlayerListItem);
-            }
-
-            PlayerListItem newItemScript = newPlayerListItem.GetComponent<PlayerListItem>();
-
-            newItemScript.nameText.text = player.NickName;
-            newItemScript.background.color = playerColoursArray[(int)player.CustomProperties["playerColour"]];
-
+            Destroy(item.gameObject);
         }
+
+        playerListItemList.Clear();
+
+        if (PhotonNetwork.CurrentRoom == null)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+        {
+            PlayerListItem newPlayerListItem = Instantiate(playerListItem.gameObject, playerListUI).GetComponent<PlayerListItem>();
+            newPlayerListItem.SetPlayerInfo(player.Value);
+
+            //if (player.Value == PhotonNetwork.LocalPlayer)
+            //{
+            //    newPlayerListItem.SetTagStatusUI(player.Value);
+            //}
+
+            playerListItemList.Add(newPlayerListItem);
+        }
+
+        //if (playerListUI.childCount > 9)
+        //{
+        //    gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        //    gridLayout.constraintCount = 3;
+        //}
+        //else
+        //{
+        //    gridLayout.constraint = GridLayoutGroup.Constraint.Flexible;
+        //}
     }
 
-    public void UpdatePlayerListTagStatus()
+    public override void OnPlayerPropertiesUpdate(Player newPlayer, Hashtable changedProps)
     {
-        foreach (GameObject playerListItem in playerListItemList)
-        {
-            switch ((bool)playerListItem.GetComponent<PlayerListItem>().player.CustomProperties["tagStatus"])
-            {
-                case false:
-                    {
-                        playerListItem.GetComponent<PlayerListItem>().tagText.text = "Free";
-                        playerListItem.GetComponent<PlayerListItem>().tagText.color = Color.green;
-                        break;
-                    }
-
-                case true:
-                    {
-                        playerListItem.GetComponent<PlayerListItem>().tagText.text = "IT";
-                        playerListItem.GetComponent<PlayerListItem>().tagText.color = Color.red;
-                        break;
-                    }
-            }
-
-        }
+        UpdatePlayerListUI();
     }
 
-
-}
-
-
-    //[PunRPC]
-    //public void UpdatePlayerListTagStatusRPC(Player player, GameObject playerListItem)
+    //public override void OnPlayerLeftRoom(Player otherPlayer)
     //{
-       
+    //    UpdatePlayerListUI();
     //}
+}
 

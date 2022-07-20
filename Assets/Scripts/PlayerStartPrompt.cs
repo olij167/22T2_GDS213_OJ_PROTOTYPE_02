@@ -19,7 +19,7 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
 
     public bool displayImage;
 
-    TagStatus tagStatus;
+    //TagStatus tagStatus;
 
     Color originalBackgroundColour, originalImageColour,invisBackgroundColour, invisImageColour;
 
@@ -109,7 +109,7 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.CustomProperties["tagStatus"] != null)
         {
 
-            switch ((bool)PhotonNetwork.LocalPlayer.CustomProperties["tagStatus"])
+            switch (PhotonNetwork.LocalPlayer.CustomProperties["tagStatus"])
             {
                 case true:
                     {
@@ -119,6 +119,11 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
                 case false:
                     {
                         runText.text = "You are Free. \n Avoid IT!";
+                        break;
+                    }
+                default:
+                    {
+                        runText.text = "Error";
                         break;
                     }
             }

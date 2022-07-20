@@ -5,17 +5,12 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameTimer : MonoBehaviourPunCallbacks
 {
-    Hashtable timerProperties = new Hashtable();
-
     public GameObject gameOverPanel, continueButton;
 
-    public const byte sendGameTimerEventCode = 1;
-
-    public TextMeshProUGUI gameOverText, loserText, continueText;
+    public TextMeshProUGUI gameOverText, loserText, loserSubText, continueText;
     TextMeshProUGUI timerText;
 
     public SetGameLength gameLength;
@@ -25,31 +20,25 @@ public class GameTimer : MonoBehaviourPunCallbacks
     public bool gameOver;
 
     public Player tagger;
+
+    public List<string> loserSubTextOptions;
+    int randomSubText;
+
     void Start()
     {
+        randomSubText = Random.Range(0, loserSubTextOptions.Count);
+
         if (PhotonNetwork.IsMasterClient)
         {
             gameTimer = timerReset = gameLength.gameTimer;
 
             photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
-
-
-            //timerProperties.Add("gameTimer", gameTimer);
-            //PhotonNetwork.CurrentRoom.SetCustomProperties(timerProperties);
         }
 
         
         timerText = GetComponent<TextMeshProUGUI>();
 
         gameOver = false;
-
-        //if (!PhotonNetwork.IsMasterClient)
-        //{
-        //    gameTimer = (float)PhotonNetwork.MasterClient.CustomProperties["gameTimer"];
-
-        //    timerProperties.Add("gameTimer", gameTimer);
-
-        //}
 
     }
 
@@ -68,9 +57,18 @@ public class GameTimer : MonoBehaviourPunCallbacks
         else
         {
             gameOverPanel.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
 
             gameOverText.text = "GAME OVER! \n";
-            loserText.text = GetTagger().NickName + " was IT"; 
+            if (tagger != null)
+            {
+                loserText.text = tagger.NickName + " was IT";
+            }
+            else
+            {
+                loserText.text = "Oopsie, something has gone wrong";
+            }
+            loserSubText.text = loserSubTextOptions[randomSubText];
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -81,31 +79,6 @@ public class GameTimer : MonoBehaviourPunCallbacks
             {
                 continueText.enabled = true;
             }
-            // + PhotonNetwork.PlayerList[i].NickName + " was the tagger at the end... \n what a loser";
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            //    {
-            //        if ((bool)PhotonNetwork.PlayerList[i].CustomProperties["tagProperties"])
-            //        {
-            //            gameOverPanel.SetActive(true);
-
-            //        }
-            //    }
-
-            //}
-
-            //if (photonView.IsMine)
-            //{
-            //    if ((bool)PhotonNetwork.LocalPlayer.CustomProperties["tagProperties"])
-            //    {
-            //        gameOverText.text += "You were it... \n what a loser";
-            //    }
-            //    else
-            //    {
-            //        gameOverText.text += "You are free for another day \n Winner!";
-            //    }
-            //}
         }
 
         timerText.text = gameTimer.ToString("00");
@@ -115,7 +88,6 @@ public class GameTimer : MonoBehaviourPunCallbacks
         {
             gameOver = true;
             Debug.Log("Game Over");
-            //PhotonNetwork.CurrentRoom.SetCustomProperties(timerProperties);
         }
         else
         {
@@ -128,6 +100,18 @@ public class GameTimer : MonoBehaviourPunCallbacks
         gameTimer = timerReset;
 
         photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
+
+        // Set new random tagger
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SetAllFreeRPC", RpcTarget.AllBuffered);
+
+            Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
+
+            photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, randomPlayer);
+        }
+
+        randomSubText = Random.Range(0, loserSubTextOptions.Count);
 
         gameOverPanel.SetActive(false);
     }

@@ -68,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Room Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 45108a9b25636b54287a1fdfbaa28fb5, type: 2}
-  m_sharedMaterial: {fileID: -2989186772397988328, guid: 45108a9b25636b54287a1fdfbaa28fb5,
+  m_fontAsset: {fileID: 11400000, guid: 21be56fb91cad4b4d9a1a4dbc0c52e83, type: 2}
+  m_sharedMaterial: {fileID: 809742040288310988, guid: 21be56fb91cad4b4d9a1a4dbc0c52e83,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -94,8 +94,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

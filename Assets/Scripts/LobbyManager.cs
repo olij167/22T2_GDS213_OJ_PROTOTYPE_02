@@ -11,7 +11,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public SetGameLength gameLength;
     public GameObject lobbyPanel, roomPanel;
-    public TextMeshProUGUI roomName;
+    public TextMeshProUGUI roomName, waitForHostText, waitForPlayersText;
 
     public RoomItem roomItemPrefab;
     List<RoomItem> roomItemsList = new List<RoomItem>();
@@ -141,15 +141,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        if (PhotonNetwork.IsMasterClient)
         {
-            playButton.SetActive(true);
+            waitForHostText.enabled = false;
+            waitForPlayersText.enabled = true;
+            playButton.SetActive(false);
+
             gameTimerInput.gameObject.SetActive(true);
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                waitForPlayersText.enabled = false;
+                playButton.SetActive(true);
+                gameTimerInput.gameObject.SetActive(true);
+            }
         }
         else
         {
+            waitForPlayersText.enabled = false;
             playButton.SetActive(false);
             gameTimerInput.gameObject.SetActive(false);
+            waitForHostText.enabled = true;
         }
 
     }

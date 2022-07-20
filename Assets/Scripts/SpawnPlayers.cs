@@ -26,6 +26,8 @@ public class SpawnPlayers : MonoBehaviourPun
 
         PhotonNetwork.Instantiate(playerToSpawn.name, randomPosition, Quaternion.identity);
 
+        Cursor.lockState = CursorLockMode.Locked;
+
     }
 
 }

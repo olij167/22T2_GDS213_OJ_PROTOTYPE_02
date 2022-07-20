@@ -8,14 +8,15 @@ TagManager:
   - RunText
   - IconImage
   - PauseMenu
+  - vCam
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
-  - 
+  - Obstacle
   - 
   - 
   - 

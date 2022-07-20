@@ -26,21 +26,17 @@ public class TagStatus : MonoBehaviourPunCallbacks
         //tagObject = GameObject.FindGameObjectWithTag("TagObject");
         //ownership = tagObject.GetComponent<OwnershipTransfer>();
         startPrompt = GameObject.FindGameObjectWithTag("RunText").GetComponent<PlayerStartPrompt>();
-        pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<PauseMenu>();
+        //pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<PauseMenu>();
 
         tagProperties["tagStatus"] = tagStatus;
 
         if (PhotonNetwork.IsMasterClient)
         {
-            //ownership.ChangeOwner();
-            Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
-
-            SetTagger(randomPlayer);
+            SetRandomTagger();
         }
 
         PhotonNetwork.SetPlayerCustomProperties(tagProperties);
 
-        startPrompt.SetText();
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
@@ -70,6 +66,11 @@ public class TagStatus : MonoBehaviourPunCallbacks
                     tagStatusText.text = "Free";
                     tagStatus = false;
                     tagStatusText.color = Color.green;
+
+                    if (photonView.IsMine)
+                    {
+                        startPrompt.SetText();
+                    }
                     break;
                 }
 
@@ -78,6 +79,10 @@ public class TagStatus : MonoBehaviourPunCallbacks
                     tagStatusText.text = "IT";
                     tagStatus = true;
                     tagStatusText.color = Color.red;
+                    if (photonView.IsMine)
+                    {
+                        startPrompt.SetText();
+                    }
                     break;
                 }
 
@@ -89,10 +94,21 @@ public class TagStatus : MonoBehaviourPunCallbacks
                 }
         }
 
+        
+
+
         //Debug.Log("status for '" + player.NickName + "' has been updated \n Is the tagger? ... " + player.CustomProperties["tagStatus"]);
 
     }
 
+    public void SetRandomTagger()
+    {
+
+        Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(0, PhotonNetwork.PlayerList.Length)];
+
+        SetTagger(randomPlayer);
+
+    }
 
     void SetTagger(Player player)
     {
@@ -109,13 +125,13 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
             tagProperties["tagStatus"] = player.CustomProperties["tagStatus"];
 
-            startPrompt.SetText();
+            //startPrompt.SetText();
 
             PhotonNetwork.SetPlayerCustomProperties(tagProperties);
 
             Debug.Log(player.NickName + " is now a tagger");
 
-            pauseMenu.UpdatePlayerListTagStatus();
+            //pauseMenu.UpdatePlayerListTagStatus();
 
         }
     }
@@ -133,6 +149,21 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
             Debug.Log(player.NickName + " is now free");
         }
+    }
+    
+    [PunRPC]
+    public void SetAllFreeRPC()
+    {
+        foreach(Player player in PhotonNetwork.PlayerList)
+        {
+            player.CustomProperties["tagStatus"] = false;
+
+            tagProperties["tagStatus"] = player.CustomProperties["tagStatus"];
+
+            Debug.Log(player.NickName + " is now free");
+        }
+
+        PhotonNetwork.SetPlayerCustomProperties(tagProperties);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -166,7 +197,7 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
                         Debug.Log("collision player tag status = " + (bool)player.CustomProperties["tagStatus"] + "\n (should be true)");
 
-                        startPrompt.SetText();
+                        //startPrompt.SetText();
                         //photonView.RPC("SetText", RpcTarget.AllBuffered);
 
                         photonView.RPC("TagImpactEffect", RpcTarget.All);
