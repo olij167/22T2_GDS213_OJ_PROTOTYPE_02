@@ -7,7 +7,7 @@ TagManager:
   - TagObject
   - RunText
   - IconImage
-  - TeleExit
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

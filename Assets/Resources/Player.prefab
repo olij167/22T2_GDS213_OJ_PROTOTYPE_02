@@ -900,7 +900,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tagStatusText: {fileID: 8685574609317750666}
-  tagImpactImage: {fileID: 0}
   tagStatus: 0
   justTagged: 0
   tagCooldown: 0.5

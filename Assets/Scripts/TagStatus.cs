@@ -13,19 +13,20 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
     public TextMeshProUGUI tagStatusText;
 
-    public Image tagImpactImage;
-
     Hashtable tagProperties = new Hashtable();
 
     public bool tagStatus = false, justTagged;
 
     public float tagCooldown;
 
+    PauseMenu pauseMenu;
+
     private void Start()
     {
         //tagObject = GameObject.FindGameObjectWithTag("TagObject");
         //ownership = tagObject.GetComponent<OwnershipTransfer>();
         startPrompt = GameObject.FindGameObjectWithTag("RunText").GetComponent<PlayerStartPrompt>();
+        pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<PauseMenu>();
 
         tagProperties["tagStatus"] = tagStatus;
 
@@ -113,6 +114,8 @@ public class TagStatus : MonoBehaviourPunCallbacks
             PhotonNetwork.SetPlayerCustomProperties(tagProperties);
 
             Debug.Log(player.NickName + " is now a tagger");
+
+            pauseMenu.UpdatePlayerListTagStatus();
 
         }
     }
