@@ -21,7 +21,7 @@ public class JumpPad : MonoBehaviour
 
         if(other.GetComponent<Rigidbody>())
         {
-            other.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce);
+            other.GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
         if (other.CompareTag("Player"))

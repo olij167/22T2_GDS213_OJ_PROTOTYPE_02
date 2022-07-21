@@ -112,6 +112,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e08d13554a7a34aa6558354fa5bf24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  climbingSounds:
+  - {fileID: 8300000, guid: 7beb34ebbcfa5e345a176d5d769e7ae3, type: 3}
+  - {fileID: 8300000, guid: 1419e9fcaceaef64eb42ccac7245a0af, type: 3}
+  - {fileID: 8300000, guid: c663aa68affee844e985ea02fcd17911, type: 3}
+  - {fileID: 8300000, guid: 21bcf1e346cc0424cbe158703eb3a2cc, type: 3}
 --- !u!65 &5843654710833410801
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -137,9 +142,9 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a7b14ca5636d7a84cb8b0ee267ee8670, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
+  m_Volume: 0.4
+  m_Pitch: 0.6
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

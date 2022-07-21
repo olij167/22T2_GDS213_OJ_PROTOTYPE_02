@@ -24,6 +24,8 @@ public class GameTimer : MonoBehaviourPunCallbacks
     public List<string> loserSubTextOptions;
     int randomSubText;
 
+    //public AudioClip gongClip;
+
     void Start()
     {
         randomSubText = Random.Range(0, loserSubTextOptions.Count);
@@ -66,7 +68,7 @@ public class GameTimer : MonoBehaviourPunCallbacks
             }
             else
             {
-                loserText.text = "Oopsie, something has gone wrong";
+                loserText.text = "";
             }
             loserSubText.text = loserSubTextOptions[randomSubText];
 
@@ -87,6 +89,7 @@ public class GameTimer : MonoBehaviourPunCallbacks
         if (gameTimer <= 0f)
         {
             gameOver = true;
+            //GetComponent<AudioSource>().PlayOneShot(gongClip);
             Debug.Log("Game Over");
         }
         else

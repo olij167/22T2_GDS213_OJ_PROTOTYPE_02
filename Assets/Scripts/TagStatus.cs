@@ -19,13 +19,15 @@ public class TagStatus : MonoBehaviourPunCallbacks
 
     public float tagCooldown;
 
-    PauseMenu pauseMenu;
+    //public AudioClip tagClip;
+    //AudioSource tagSource;
 
     private void Start()
     {
         //tagObject = GameObject.FindGameObjectWithTag("TagObject");
         //ownership = tagObject.GetComponent<OwnershipTransfer>();
         startPrompt = GameObject.FindGameObjectWithTag("RunText").GetComponent<PlayerStartPrompt>();
+        //tagSource = GameObject.FindGameObjectWithTag("TagUI").GetComponent<AudioSource>();
         //pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<PauseMenu>();
 
         tagProperties["tagStatus"] = tagStatus;
@@ -201,6 +203,8 @@ public class TagStatus : MonoBehaviourPunCallbacks
                         //photonView.RPC("SetText", RpcTarget.AllBuffered);
 
                         photonView.RPC("TagImpactEffect", RpcTarget.All);
+
+                        //tagSource.PlayOneShot(tagClip);
 
                         //PhotonNetwork.SetPlayerCustomProperties(tagProperties);
                     }

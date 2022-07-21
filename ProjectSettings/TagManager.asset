@@ -9,6 +9,7 @@ TagManager:
   - IconImage
   - PauseMenu
   - vCam
+  - TagUI
   layers:
   - Default
   - TransparentFX

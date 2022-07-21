@@ -160,7 +160,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.778889, y: 1}
+    m_SensorSize: {x: 1.7781422, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -259,8 +259,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b8b20f823301dae4b88f92f63c22b715, type: 2}
+  m_sharedMaterial: {fileID: -2411658322240438410, guid: b8b20f823301dae4b88f92f63c22b715,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -798,7 +799,7 @@ MonoBehaviour:
   sprintSpeed: 15
   moveSpeed: 0
   jumpForce: 6
-  isGrounded: 0
+  isJumping: 0
   moveDirection: {x: 0, y: 0, z: 0}
   gravScale: 1
   footstepSounds:
@@ -812,7 +813,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dd70634f573cf224c8ae11940574ce71, type: 3}
   - {fileID: 8300000, guid: 7b265c9a45469304cb5ecf1c48b5d80f, type: 3}
   - {fileID: 8300000, guid: ec68ce7e994dd934cb1b1f576e477a89, type: 3}
-  jumpSounds: []
+  jumpSounds:
+  - {fileID: 8300000, guid: b682fbf31efec0d40bc8aa8568ed4956, type: 3}
+  - {fileID: 8300000, guid: d4d8dd184b28b354b9d74a557c6ef283, type: 3}
+  - {fileID: 8300000, guid: 9433c019b130afa4f8367476568fccbf, type: 3}
+  - {fileID: 8300000, guid: 10a604c0b4d46b04a9bd32524825b586, type: 3}
 --- !u!143 &3842655611993775455
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1094,8 +1099,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 21be56fb91cad4b4d9a1a4dbc0c52e83, type: 2}
+  m_sharedMaterial: {fileID: 809742040288310988, guid: 21be56fb91cad4b4d9a1a4dbc0c52e83,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

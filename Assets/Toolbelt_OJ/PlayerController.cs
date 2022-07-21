@@ -16,7 +16,7 @@ namespace Toolbelt_OJ
         [HideInInspector] public float moveSpeed;
         //public Rigidbody theRB;
         public float jumpForce = 4f;
-        public bool isGrounded;
+        public bool isJumping;
         private CharacterController controller;
 
         [HideInInspector] public Vector3 moveDirection;
@@ -65,7 +65,7 @@ namespace Toolbelt_OJ
                 moveDirection = moveDirection.normalized * moveSpeed;
                 moveDirection.y = yStore;
 
-                if (controller.isGrounded)
+                if (controller.isGrounded && !isJumping)
                 {
                     //moveDirection.y = 0f;
                     if (Input.GetButtonDown("Jump"))
@@ -76,17 +76,25 @@ namespace Toolbelt_OJ
                         {
                             audioSource.Stop();
                         }
-
-                        audioSource.PlayOneShot(jumpSounds[Random.Range(0, jumpSounds.Count)]);
                     }
 
                     if (controller.velocity.magnitude > 2f && !audioSource.isPlaying)
                     {
-                        audioSource.volume = Random.Range(0.8f, 1f);
+                        //audioSource.volume = Random.Range(0.25f, 0.35f);
                         audioSource.pitch = Random.Range(0.8f, 1.1f);
                         audioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Count)]);
                     }
 
+                }
+                else if (controller.isGrounded && isJumping)
+                {
+                    audioSource.PlayOneShot(jumpSounds[Random.Range(0, jumpSounds.Count)]);
+                    isJumping = false;
+                }
+
+                if (!controller.isGrounded)
+                {
+                    isJumping = true;
                 }
 
                 if (Input.GetKey(KeyCode.LeftShift))
