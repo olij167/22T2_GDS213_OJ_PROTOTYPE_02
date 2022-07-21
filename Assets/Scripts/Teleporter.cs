@@ -14,38 +14,28 @@ public class Teleporter : MonoBehaviourPunCallbacks
     Vector3 randomPosition;
 
 
-    //public AudioClip teleSound;
+    public AudioClip teleSound;
+    AudioSource audioSource;
 
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
-    //private void Start()
-    //{
-    //    teleExits = new List<GameObject>();
-    //    teleExits.AddRange(GameObject.FindGameObjectsWithTag("TeleExit"));
-
-
-    //    for (int i = 0; i < teleExits.Count; i++)
-    //    {
-    //        if (teleExits[i] == gameObject)
-    //        {
-    //            teleExits.Remove(teleExits[i]);
-    //        }
-    //    }
-    //}
 
     private void OnTriggerEnter(Collider other)
     {
 
-            //exitChoice = Random.Range(0, teleExits.Count);
+
 
         randomPosition = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), Random.Range(minZ, maxZ));
 
 
-        //other.transform.position = teleExits[exitChoice].transform.position;
 
         if (other.CompareTag("Player"))
         {
             other.GetComponent<CharacterController>().enabled = false;
-            other.transform.position = randomPosition; //teleExits[exitChoice].transform.position;
+            other.transform.position = randomPosition; 
 
             other.GetComponent<CharacterController>().enabled = true;
 
@@ -54,12 +44,11 @@ public class Teleporter : MonoBehaviourPunCallbacks
         else
         {
             other.transform.position = randomPosition;
-            //other.transform.position = teleExits[exitChoice].transform.position;
+ 
         }
 
-            //other.GetComponent<PhotonView>().RPC("Teleport", RpcTarget.AllBuffered, other.gameObject, teleExits[exitChoice]);
 
-        if (other.transform.position == randomPosition) //teleExits[exitChoice].transform.position
+        if (other.transform.position == randomPosition)
         {
             Debug.Log("teleported a player to " + randomPosition.ToString());
         }
@@ -67,10 +56,16 @@ public class Teleporter : MonoBehaviourPunCallbacks
         {
             Debug.Log("failed to teleport");
         }
-            //GetComponent<AudioSource>().PlayOneShot(teleSound);
-            
-        
-        
+            GetComponent<AudioSource>().PlayOneShot(teleSound);
+
+       
+        if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+        audioSource.PlayOneShot(teleSound);
+
     }
 
     

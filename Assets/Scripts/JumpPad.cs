@@ -7,8 +7,14 @@ public class JumpPad : MonoBehaviour
 {
     public float jumpForce;
 
-    //public List<AudioClip> trampolineAudio;
-    //private AudioSource audioSource;
+    public List<AudioClip> trampolineAudio;
+    private AudioSource audioSource;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     public void OnTriggerEnter(Collider other)
     {
         //other.GetComponent<CharacterController>().
@@ -25,6 +31,11 @@ public class JumpPad : MonoBehaviour
 
         }
 
-        //audioSource.PlayOneShot(trampolineAudio[Random.Range(0, trampolineAudio.Count)]);
+        if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+        audioSource.PlayOneShot(trampolineAudio[Random.Range(0, trampolineAudio.Count)]);
     }
 }

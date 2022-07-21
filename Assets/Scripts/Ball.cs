@@ -6,15 +6,26 @@ using Toolbelt_OJ;
 public class Ball : MonoBehaviour
 {
     Rigidbody rb;
+
+    public List<AudioClip> kickSounds;
+    AudioSource audioSource;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             rb.AddForce(other.gameObject.GetComponent<PlayerController>().moveDirection, ForceMode.Impulse);
+
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            audioSource.PlayOneShot(kickSounds[Random.Range(0, kickSounds.Count)]);
         }
     }
 

@@ -22,6 +22,9 @@ namespace Toolbelt_OJ
         [HideInInspector] public Vector3 moveDirection;
         public float gravScale = 1.0f;
 
+        public List<AudioClip> footstepSounds, jumpSounds;
+        AudioSource audioSource;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -32,6 +35,7 @@ namespace Toolbelt_OJ
             //Cursor.visible = true;
 
             view = GetComponent<PhotonView>();
+            audioSource = GetComponent<AudioSource>();
 
             if (!view.IsMine)
             {
@@ -67,17 +71,29 @@ namespace Toolbelt_OJ
                     if (Input.GetButtonDown("Jump"))
                     {
                         moveDirection.y = jumpForce;
+
+                        if (audioSource.isPlaying)
+                        {
+                            audioSource.Stop();
+                        }
+
+                        audioSource.PlayOneShot(jumpSounds[Random.Range(0, jumpSounds.Count)]);
                     }
 
-                    if (Input.GetKey(KeyCode.LeftShift))
+                    if (controller.velocity.magnitude > 2f && !audioSource.isPlaying)
                     {
-                        moveSpeed = sprintSpeed;
+                        audioSource.volume = Random.Range(0.8f, 1f);
+                        audioSource.pitch = Random.Range(0.8f, 1.1f);
+                        audioSource.PlayOneShot(footstepSounds[Random.Range(0, footstepSounds.Count)]);
                     }
-                    else moveSpeed = baseSpeed;
+
                 }
 
-                
-
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    moveSpeed = sprintSpeed;
+                }
+                else moveSpeed = baseSpeed;
 
                 moveDirection.y = moveDirection.y + (Physics.gravity.y * gravScale * Time.deltaTime);
                 controller.Move(moveDirection * Time.deltaTime);
