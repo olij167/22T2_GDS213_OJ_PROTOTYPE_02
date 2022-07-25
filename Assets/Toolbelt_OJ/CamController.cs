@@ -39,7 +39,7 @@ namespace Toolbelt_OJ
         }
 
         // Update is called once per frame
-        void Update()
+        void LateUpdate()
         {
             if (view.IsMine)
             {

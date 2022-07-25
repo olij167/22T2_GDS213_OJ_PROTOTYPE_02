@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Cinemachine;
 
@@ -12,8 +13,8 @@ namespace Toolbelt_OJ
         PhotonView view;
         public Camera cam;
         public CinemachineVirtualCamera vCam;
-        public float baseSpeed = 5f, sprintSpeed;
-        [HideInInspector] public float moveSpeed;
+        public float baseSpeed = 5f, sprintSpeed, stamina, staminaDecreaseRate, staminaIncreaseRate;
+        [HideInInspector] public float moveSpeed, maxStamina;
         //public Rigidbody theRB;
         public float jumpForce = 4f;
         public bool isJumping;
@@ -25,10 +26,21 @@ namespace Toolbelt_OJ
         public List<AudioClip> footstepSounds, jumpSounds;
         AudioSource audioSource;
 
+        private Slider staminaBar;
+        private GameObject zoomText;
+
         // Start is called before the first frame update
         void Start()
         {
             moveSpeed = baseSpeed;
+
+            staminaBar = GameObject.FindGameObjectWithTag("StaminaBar").GetComponent<Slider>();
+
+            zoomText = staminaBar.transform.GetChild(1).gameObject;
+
+            maxStamina = stamina;
+
+            staminaBar.maxValue = maxStamina;
             //theRB = GetComponent<Rigidbody>();
             controller = GetComponent<CharacterController>();
             Cursor.lockState = CursorLockMode.Locked;
@@ -65,6 +77,11 @@ namespace Toolbelt_OJ
                 moveDirection = moveDirection.normalized * moveSpeed;
                 moveDirection.y = yStore;
 
+                if (!controller.isGrounded)
+                {
+                    isJumping = true;
+                }
+
                 if (controller.isGrounded && !isJumping)
                 {
                     //moveDirection.y = 0f;
@@ -92,16 +109,38 @@ namespace Toolbelt_OJ
                     isJumping = false;
                 }
 
-                if (!controller.isGrounded)
+                switch (Input.GetKey(KeyCode.LeftShift))
                 {
-                    isJumping = true;
+                    case true:
+                        {
+                            if (stamina >= 0f)
+                            {
+                                moveSpeed = sprintSpeed;
+                                stamina -= Time.deltaTime * staminaDecreaseRate;
+                                zoomText.SetActive(true);
+
+                            }
+                            else
+                            {
+                                moveSpeed = baseSpeed;
+                                //zoomText.SetActive(false);
+                            }
+                            break;
+                        }
+                    case false:
+                        {
+                            moveSpeed = baseSpeed;
+                            zoomText.SetActive(false);
+
+                            if (stamina <= maxStamina)
+                            {
+                                stamina += Time.deltaTime * staminaIncreaseRate;
+                            }
+                            break;
+                        }
                 }
 
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    moveSpeed = sprintSpeed;
-                }
-                else moveSpeed = baseSpeed;
+                staminaBar.value = stamina;
 
                 moveDirection.y = moveDirection.y + (Physics.gravity.y * gravScale * Time.deltaTime);
                 controller.Move(moveDirection * Time.deltaTime);

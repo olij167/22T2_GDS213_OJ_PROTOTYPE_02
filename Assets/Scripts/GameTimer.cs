@@ -42,6 +42,14 @@ public class GameTimer : MonoBehaviourPunCallbacks
 
         gameOver = false;
 
+        //foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        //{
+        //    if (!player.GetComponent<TagStatus>().enabled)
+        //    {
+        //        player.GetComponent<TagStatus>().enabled = true;
+        //    }
+        //}
+
     }
 
     void Update()
@@ -81,6 +89,14 @@ public class GameTimer : MonoBehaviourPunCallbacks
             {
                 continueText.enabled = true;
             }
+
+            //foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+            //{
+            //    if (player.GetComponent<TagStatus>().enabled)
+            //    {
+            //        player.GetComponent<TagStatus>().enabled = false;
+            //    }
+            //}
         }
 
         timerText.text = gameTimer.ToString("00");
@@ -91,32 +107,37 @@ public class GameTimer : MonoBehaviourPunCallbacks
             gameOver = true;
             //GetComponent<AudioSource>().PlayOneShot(gongClip);
             Debug.Log("Game Over");
+
+           
         }
         else
         {
             gameOver = false;
+
+            
         }
     }
 
     public void ContinueButton()
     {
-        gameTimer = timerReset;
+        PhotonNetwork.LoadLevel("TagGame");
+        //gameTimer = timerReset;
 
-        photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
+        //photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
 
-        // Set new random tagger
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("SetAllFreeRPC", RpcTarget.AllBuffered);
+        //// Set new random tagger
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    photonView.RPC("SetAllFreeRPC", RpcTarget.AllBuffered);
 
-            Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
+        //    Player randomPlayer = PhotonNetwork.PlayerList[Random.Range(1, PhotonNetwork.PlayerList.Length)];
 
-            photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, randomPlayer);
-        }
+        //    photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, randomPlayer);
+        //}
 
-        randomSubText = Random.Range(0, loserSubTextOptions.Count);
+        //randomSubText = Random.Range(0, loserSubTextOptions.Count);
 
-        gameOverPanel.SetActive(false);
+        //gameOverPanel.SetActive(false);
     }
 
     public void OnClickLeaveRoom()
