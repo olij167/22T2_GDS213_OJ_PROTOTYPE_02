@@ -91,6 +91,7 @@ public class PlayerItem : MonoBehaviourPunCallbacks
         if (player == targetPlayer)
         {
             UpdatePlayerItem(targetPlayer);
+            FindObjectOfType<LobbyManager>().UpdateGameMode();
         }
     }
 

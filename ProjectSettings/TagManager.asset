@@ -12,6 +12,7 @@ TagManager:
   - TagUI
   - StaminaBar
   - Timer
+  - Music
   layers:
   - Default
   - TransparentFX

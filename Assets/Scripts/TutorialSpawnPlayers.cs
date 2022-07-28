@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 
-public class SpawnPlayers : MonoBehaviourPun
+public class TutorialSpawnPlayers : MonoBehaviourPun
 {
     public GameObject[] playerColours;
 
@@ -22,14 +22,9 @@ public class SpawnPlayers : MonoBehaviourPun
 
         Vector3 randomPosition = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), Random.Range(minZ, maxZ));
 
-        GameObject playerToSpawn = playerColours[(int)PhotonNetwork.LocalPlayer.CustomProperties["playerColour"]];
+        GameObject playerToSpawn = playerColours[Random.Range(0, playerColours.Length)];
 
         PhotonNetwork.Instantiate(playerToSpawn.name, randomPosition, Quaternion.identity);
-
-        //TagStatus tagStatus = playerToSpawn.GetComponent<TagStatus>();
-
-        //tagStatus.tagStatusText.enabled = false;
-        //tagStatus.enabled = false;
 
         Cursor.lockState = CursorLockMode.Locked;
 

@@ -6,5 +6,5 @@ using UnityEngine;
 public class SetGameLength : ScriptableObject
 {
     public float gameTimer;
-    public bool isBuildUps;
+    public int gameMode;
 }

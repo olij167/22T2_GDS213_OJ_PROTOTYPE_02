@@ -36,7 +36,10 @@ public class GameTimer : MonoBehaviourPunCallbacks
         {
             gameTimer = timerReset = gameLength.gameTimer;
 
-            isBuildUps = gameLength.isBuildUps;
+            if (gameLength.gameMode == 1)
+            {
+                isBuildUps = true;
+            }
 
             photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer, isBuildUps);
         }
@@ -71,18 +74,6 @@ public class GameTimer : MonoBehaviourPunCallbacks
         else if (!isBuildUps)
         {
 
-            //foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-            //{
-            //    CapsuleCollider collider;
-
-            //    if (player.GetComponent<CapsuleCollider>() && player.GetComponent<CapsuleCollider>().isTrigger)
-            //    {
-            //        collider = player.GetComponent<CapsuleCollider>();
-
-            //        collider.enabled = false;
-            //    }
-            //}
-
             gameOverPanel.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
 
@@ -106,14 +97,6 @@ public class GameTimer : MonoBehaviourPunCallbacks
             {
                 continueText.enabled = true;
             }
-
-            //foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-            //{
-            //    if (player.GetComponent<TagStatus>().enabled)
-            //    {
-            //        player.GetComponent<TagStatus>().enabled = false;
-            //    }
-            //}
         }
         else
         {
@@ -132,7 +115,7 @@ public class GameTimer : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    loserText.text = "It Wins!";
+                    loserText.text = "IT Wins!";
                     break;
                 }
             }

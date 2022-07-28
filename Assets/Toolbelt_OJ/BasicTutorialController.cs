@@ -19,20 +19,8 @@ namespace Toolbelt_OJ
 
         void Start()
         {
-            tutorialUI.SetActive(false);
-        }
-
-        public void StartTutorial()
-        {
-            menuUI.SetActive(false);
-            tutorialUI.SetActive(true);
-
+            //tutorialUI.SetActive(false);
             tutorialText.text = tutorialInfoList[0];
-            //foreach (TextMeshProUGUI text in tutorialTextList)
-            //{
-            //    text.enabled = false;
-            //}
-
             count = 0;
         }
 

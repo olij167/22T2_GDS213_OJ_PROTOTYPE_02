@@ -18,7 +18,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public RoomItem roomItemPrefab;
     List<RoomItem> roomItemsList = new List<RoomItem>();
     public Transform contentObject;
-    Hashtable roomProperties = new Hashtable() { ["GameMode"] = false };
+
+    Hashtable roomProperties = new Hashtable() { ["GameMode"] = 0 };
 
     public float timeBetweenUpdates = 1.5f;
     float nextUpdateTime;
@@ -30,7 +31,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public GameObject playButton, gameModeParent;
     public Button gamemodeButton;
 
-    //bool gameMode;
+    //int gameMode;
     //string gameModeText;
 
     //public int nextPlayersTeam = 1;
@@ -43,9 +44,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         createInput.characterLimit = 12;
         gameTimerInput.contentType = TMP_InputField.ContentType.DecimalNumber;
-        gameLength.isBuildUps = false;
-
-        
+        gameLength.gameMode = 0;
     }
 
     public void CreateRoom()
@@ -58,17 +57,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        if (PhotonNetwork.CurrentRoom.Name == "tutorialRoom")
+        {
+            PhotonNetwork.LoadLevel("Tutorial");
+        }
+
         lobbyPanel.SetActive(false);
         roomPanel.SetActive(true);
         roomName.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
-
+        
         //if (PhotonNetwork.IsMasterClient)
         //{
 
         //}
-        roomProperties["GameMode"] = gameLength.isBuildUps;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
+        //roomProperties["GameMode"] = gameLength.gameMode;
+        //PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -80,12 +84,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         //roomProperties["GameMode"] = gameLength.isBuildUps;
 
-        UpdateGameMode();
-        
+        foreach(Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.IsLocal)
+            {
+                gameLength.gameMode = (int)roomProperties["GameMode"];
+                UpdateGameMode();
+            }
+        }
     }
 
     void UpdateRoomList(List<RoomInfo> list)
@@ -172,6 +182,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             waitForPlayersText.enabled = true;
             playButton.SetActive(false);
             gameModeParent.SetActive(true);
+            gamemodeButton.interactable = true;
+
 
             gameTimerInput.gameObject.SetActive(true);
 
@@ -188,8 +200,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             playButton.SetActive(false);
             gameTimerInput.gameObject.SetActive(false);
             gameModeParent.SetActive(false);
+            //gamemodeButton.interactable = false;
             
             waitForHostText.enabled = true;
+
+            //UpdateGameMode();
+
+            //if (roomProperties["GameMode"] != null)
+            //{
+            //    gameLength.gameMode = (int)roomProperties["GameMode"];
+            //}
+
         }
 
     }
@@ -204,65 +225,60 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void OnClickToggleBuildUps()
+    public void OnClickTutorialButton()
     {
 
-        if (gameLength.isBuildUps)
+        PhotonNetwork.CreateRoom("tutorialRoom", new RoomOptions { MaxPlayers = 1 });
+
+        
+        
+    }
+
+    public void OnClickToggleBuildUps()
+    {
+        switch (gameLength.gameMode)
         {
-            //gamemodeText.text = "Classic"; 
-            gameLength.isBuildUps = false;
-        }
-        else
-        {
-            //gamemodeText.text = "Build-Ups";
-            gameLength.isBuildUps = true;
+            case 0:
+                {
+                    gameLength.gameMode = 1;
+
+                    break;
+                }
+            case 1:
+                {
+                    gameLength.gameMode = 0;
+
+                    break;
+                }
         }
 
-        roomProperties["GameMode"]  = gameLength.isBuildUps;
-        //gameMode = gameLength.isBuildUps;
-
-        //gameModeText = gamemodeText.text;
+        roomProperties["GameMode"] = gameLength.gameMode;
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
     }
 
     public void UpdateGameMode()
     {
-        
-        //gameLength.isBuildUps = gameMode;
-        //roomProperties["GameMode"] = gameMode;
 
-        string gameModeText;
 
-        Debug.Log("Updating gamemode: " + gameLength.isBuildUps);
+        Debug.Log("Updating gamemode: " + roomProperties["GameMode"] + "\n [1 = build-ups, 0 = classic]");
 
         if (roomProperties["GameMode"] != null)
         {
-            if ((bool)roomProperties["GameMode"])
-            {
-                gameModeText = "Build-Ups";
-            }
-            else
-            {
-                gameModeText = "Classic";
-            }
 
-            gamemodeText.text = gameModeText;
+            switch ((int)roomProperties["GameMode"])
+            {
+                case 0:
+                    {
+                        gamemodeText.text = "Classic";
+                        break;
+                    }
+                case 1:
+                    {
+                        gamemodeText.text = "Build-Ups";
+                        break;
+                    } 
+            }
         }
-
-        //PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
-        //;
     }
-
-    //public void UpdateTeam()
-    //{
-    //    if (nextPlayersTeam == 1)
-    //    {
-    //        nextPlayersTeam = 2;
-    //    }
-    //    else
-    //    {
-    //        nextPlayersTeam = 1;
-    //    }
-    //}
 }

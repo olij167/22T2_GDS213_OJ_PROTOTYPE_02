@@ -100,12 +100,12 @@ public class TagStatus : MonoBehaviourPunCallbacks
                     break;
                 }
 
-            default:
-                {
-                    tagStatusText.text = "ERROR";
-                    tagStatusText.color = Color.magenta;
-                    break;
-                }
+            //default:
+            //    {
+            //        tagStatusText.text = "ERROR";
+            //        tagStatusText.color = Color.magenta;
+            //        break;
+            //    }
         }
 
         
