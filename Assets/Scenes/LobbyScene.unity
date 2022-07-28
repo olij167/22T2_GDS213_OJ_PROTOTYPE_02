@@ -2267,7 +2267,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1983161631}
   m_Father: {fileID: 1276943442}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2686,6 +2687,7 @@ MonoBehaviour:
     type: 3}
   playerItemParent: {fileID: 1993172660}
   playButton: {fileID: 87021259}
+  gameModeParent: {fileID: 742624530}
   gamemodeButton: {fileID: 1983161634}
 --- !u!4 &1192075836
 Transform:
@@ -2740,7 +2742,6 @@ RectTransform:
   - {fileID: 537414988}
   - {fileID: 47362085}
   - {fileID: 742624531}
-  - {fileID: 1983161631}
   m_Father: {fileID: 1590279638529935083}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3456,7 +3457,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 423480660}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999153
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4550,6 +4551,7 @@ GameObject:
   - component: {fileID: 1983161634}
   - component: {fileID: 1983161633}
   - component: {fileID: 1983161632}
+  - component: {fileID: 1983161637}
   m_Layer: 5
   m_Name: Gamemode Button
   m_TagString: Untagged
@@ -4570,12 +4572,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1379962357}
-  m_Father: {fileID: 1276943442}
-  m_RootOrder: 8
+  m_Father: {fileID: 742624531}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 11, y: 6.34}
+  m_AnchoredPosition: {x: 0.8553467, y: -72.83002}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0, y: 0}
 --- !u!82 &1983161632
@@ -4801,6 +4803,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1983161630}
   m_CullTransparentMesh: 1
+--- !u!114 &1983161637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983161630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1993172659
 GameObject:
   m_ObjectHideFlags: 0
@@ -4936,7 +4960,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0008958737}
+  m_AnchoredPosition: {x: 0, y: 0.00035016684}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2021072047

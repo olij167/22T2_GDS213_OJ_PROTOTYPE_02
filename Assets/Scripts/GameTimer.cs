@@ -38,7 +38,7 @@ public class GameTimer : MonoBehaviourPunCallbacks
 
             isBuildUps = gameLength.isBuildUps;
 
-            photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
+            photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer, isBuildUps);
         }
 
         
