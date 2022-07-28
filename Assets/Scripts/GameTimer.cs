@@ -17,12 +17,14 @@ public class GameTimer : MonoBehaviourPunCallbacks
     public float gameTimer;
     float timerReset;
 
-    public bool gameOver;
+    public bool gameOver, isBuildUps;
 
     public Player tagger;
 
     public List<string> loserSubTextOptions;
     int randomSubText;
+
+    public float minX, maxX, minY, maxY, minZ, maxZ;
 
     //public AudioClip gongClip;
 
@@ -33,6 +35,8 @@ public class GameTimer : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             gameTimer = timerReset = gameLength.gameTimer;
+
+            isBuildUps = gameLength.isBuildUps;
 
             photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
         }
@@ -54,7 +58,7 @@ public class GameTimer : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        tagger = GetTagger();
+        //tagger = GetTagger();
 
         if (!gameOver)
         {
@@ -64,8 +68,21 @@ public class GameTimer : MonoBehaviourPunCallbacks
             continueButton.SetActive(false);
             continueText.enabled = false;
         }
-        else
+        else if (!isBuildUps)
         {
+
+            //foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+            //{
+            //    CapsuleCollider collider;
+
+            //    if (player.GetComponent<CapsuleCollider>() && player.GetComponent<CapsuleCollider>().isTrigger)
+            //    {
+            //        collider = player.GetComponent<CapsuleCollider>();
+
+            //        collider.enabled = false;
+            //    }
+            //}
+
             gameOverPanel.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
 
@@ -98,15 +115,50 @@ public class GameTimer : MonoBehaviourPunCallbacks
             //    }
             //}
         }
+        else
+        {
+
+            gameOverPanel.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+
+            gameOverText.text = "GAME OVER! \n";
+
+
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (!(bool)PhotonNetwork.PlayerList[i].CustomProperties["tagStatus"])
+                {
+                    loserText.text = "Free Team Win!";
+                }
+                else
+                {
+                    loserText.text = "It Wins!";
+                    break;
+                }
+            }
+
+            loserSubText.text = loserSubTextOptions[randomSubText];
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                continueButton.SetActive(true);
+                continueText.enabled = false;
+            }
+            else
+            {
+                continueText.enabled = true;
+            }
+        }
 
         timerText.text = gameTimer.ToString("00");
 
 
-        if (gameTimer <= 0f)
+        if (gameTimer <= 0f || !GetFree())
         {
             gameOver = true;
+            tagger = GetTagger();
             //GetComponent<AudioSource>().PlayOneShot(gongClip);
-            Debug.Log("Game Over");
+            //Debug.Log("Game Over");
 
            
         }
@@ -120,10 +172,19 @@ public class GameTimer : MonoBehaviourPunCallbacks
 
     public void ContinueButton()
     {
-        PhotonNetwork.LoadLevel("TagGame");
-        //gameTimer = timerReset;
+        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            //Destroy(player);
+            player.GetComponent<CharacterController>().enabled = false;
+            player.transform.position = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), Random.Range(minZ, maxZ));
+            player.GetComponent<CharacterController>().enabled = true;
 
-        //photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer);
+        }
+
+        //PhotonNetwork.LoadLevel("TagGame");
+        gameTimer = timerReset;
+
+        photonView.RPC("SendGameTimer", RpcTarget.AllBuffered, gameTimer, isBuildUps);
 
         //// Set new random tagger
         //if (PhotonNetwork.IsMasterClient)
@@ -135,9 +196,9 @@ public class GameTimer : MonoBehaviourPunCallbacks
         //    photonView.RPC("SetTaggerRPC", RpcTarget.AllBuffered, randomPlayer);
         //}
 
-        //randomSubText = Random.Range(0, loserSubTextOptions.Count);
+        randomSubText = Random.Range(0, loserSubTextOptions.Count);
 
-        //gameOverPanel.SetActive(false);
+        gameOverPanel.SetActive(false);
     }
 
     public void OnClickLeaveRoom()
@@ -148,10 +209,11 @@ public class GameTimer : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SendGameTimer(float timer)
+    public void SendGameTimer(float timer, bool gameMode)
     {
 
         gameTimer = timer;
+        isBuildUps = gameMode;
             //gameTimer = (float)PhotonNetwork.CurrentRoom.CustomProperties["gameTimer"];
             //PhotonNetwork.CurrentRoom.SetCustomProperties(timerProperties);
         
@@ -165,13 +227,30 @@ public class GameTimer : MonoBehaviourPunCallbacks
             {
                 if ((bool)PhotonNetwork.PlayerList[i].CustomProperties["tagStatus"])
                 {
-                    Debug.Log("Tagger = " + PhotonNetwork.PlayerList[i].NickName);
+                    //Debug.Log("Tagger is = " + PhotonNetwork.PlayerList[i].NickName);
                     return PhotonNetwork.PlayerList[i];
                 }
             }
         }
 
         return null;
+    }
+
+    public bool GetFree()
+    {
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i].CustomProperties["tagStatus"] != null)
+            {
+                if (!(bool)PhotonNetwork.PlayerList[i].CustomProperties["tagStatus"])
+                {
+                    //Debug.Log("Tagger is = " + PhotonNetwork.PlayerList[i].NickName);
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     //public void OnEnable()

@@ -151,12 +151,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af29e874d5686fb479e1d775675adba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minX: -48
-  maxX: 48
+  minX: -123
+  maxX: 123
   minY: 0
-  maxY: 0
-  minZ: -48
-  maxZ: 48
+  maxY: 1
+  minZ: -123
+  maxZ: 123
   moveSpeed: 2
   floatDistance: 5
   newPosTimer: 10

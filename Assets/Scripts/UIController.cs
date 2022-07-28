@@ -152,6 +152,18 @@ namespace Toolbelt_OJ
             
         }
 
+        private void OnRectTransformDimensionsChange()
+        {
+            if (isText)
+            {
+                textStartPos = new Vector3(Screen.width / 2, (Screen.height / 2 + (Screen.height / 4)), textStartPos.z);
+            }
+            if (isImage)
+            {
+                imageStartPos = new Vector3(Screen.width / 2, (Screen.height / 2 + (Screen.height / 4)), imageStartPos.z);
+            }
+        }
+
         public void UIHover(TextMeshProUGUI text, Vector3 startPosition, float timer)
         {
             text.rectTransform.position = Vector3.Lerp(new Vector3(startPosition.x + horizontalHoverDistance, startPosition.y - verticalHoverDistance, text.rectTransform.position.z), new Vector3(startPosition.x - horizontalHoverDistance, startPosition.y + verticalHoverDistance, text.rectTransform.position.z), Mathf.PingPong(timer, pingPongDuration));

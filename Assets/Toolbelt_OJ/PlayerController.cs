@@ -53,7 +53,7 @@ namespace Toolbelt_OJ
             {
                 //Destroy(cam);
                 cam.enabled = false;
-                vCam.enabled = false;
+                vCam.gameObject.SetActive(false);
                 cam.GetComponent<AudioListener>().enabled = false;
             }
         }

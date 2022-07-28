@@ -11,6 +11,7 @@ TagManager:
   - vCam
   - TagUI
   - StaminaBar
+  - Timer
   layers:
   - Default
   - TransparentFX

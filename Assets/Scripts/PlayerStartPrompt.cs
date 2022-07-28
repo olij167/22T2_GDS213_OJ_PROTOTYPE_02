@@ -9,6 +9,12 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
 {
     TextMeshProUGUI runText;
 
+    public TextMeshProUGUI tagImpactText;
+
+    public List<string> buildUpsImpactTextOptions;
+
+    int buildUpsTextChoice;
+
     public Image tagImpactBackground, tagImpactImage;
 
     public float textDisplayTimer, textFadeInTime = 2f, textFadeOutTime = 2f;
@@ -19,7 +25,7 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
 
     public bool displayImage;
 
-    //TagStatus tagStatus;
+    public GameTimer gameTimer;
 
     Color originalBackgroundColour, originalImageColour,invisBackgroundColour, invisImageColour;
 
@@ -39,13 +45,18 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
 
         textTimerReset = textDisplayTimer;
         imageTimerReset = imageDisplayTimer;
+
+        if (gameTimer.isBuildUps)
+        {
+            buildUpsTextChoice = Random.Range(0, buildUpsImpactTextOptions.Count);
+        }
     }
 
     void Update()
     {
         if (displayText)
         {
-
+            
             textDisplayTimer -= Time.deltaTime;
 
             if (textDisplayTimer >= textTimerReset - textFadeInTime)
@@ -75,6 +86,15 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
         {
             tagImpactBackground.gameObject.SetActive(true);
 
+            if (gameTimer.GetTagger() != null && !gameTimer.isBuildUps)
+            {
+                tagImpactText.text = gameTimer.GetTagger().NickName + " is IT";
+            }
+            else
+            {
+                tagImpactText.text = buildUpsImpactTextOptions[buildUpsTextChoice];
+            }
+
             imageDisplayTimer -= Time.deltaTime;
 
             if (imageDisplayTimer >= imageTimerReset - imageFadeInTime)
@@ -82,12 +102,17 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
 
                 tagImpactBackground.color = Color.Lerp(invisBackgroundColour, originalBackgroundColour, imageTimerReset - imageDisplayTimer);
                 tagImpactImage.color = Color.Lerp(invisImageColour, originalImageColour, imageTimerReset - imageDisplayTimer);
+
+                tagImpactText.alpha = Mathf.Lerp(0f, 1f, textTimerReset - textDisplayTimer);
+
             }
 
             if (imageDisplayTimer <= imageFadeOutTime)
             {
                 tagImpactBackground.color = Color.Lerp(invisBackgroundColour, originalBackgroundColour, imageDisplayTimer);
                 tagImpactImage.color = Color.Lerp(invisImageColour, originalImageColour, imageDisplayTimer);
+
+                tagImpactText.alpha = Mathf.Lerp(0f, 1f, textDisplayTimer);
             }
 
             if (imageDisplayTimer <= 0f)
@@ -100,6 +125,11 @@ public class PlayerStartPrompt : MonoBehaviourPunCallbacks
             tagImpactBackground.gameObject.SetActive(false);
 
             imageDisplayTimer = imageTimerReset;
+
+            if (gameTimer.isBuildUps)
+            {
+                buildUpsTextChoice = Random.Range(0, buildUpsImpactTextOptions.Count);
+            }
         }
 
     }

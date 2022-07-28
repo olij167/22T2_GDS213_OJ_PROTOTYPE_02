@@ -37,7 +37,15 @@ public class PlayerItem : MonoBehaviourPunCallbacks
     {
         playerName.text = _player.NickName;
         player = _player;
-        //playerColour = playerColoursArray[(int)_player.CustomProperties["playerColour"]];
+
+        //if (_player.CustomProperties["playerColour"] != null)
+        //{
+        //    playerColour = playerColoursArray[(int)_player.CustomProperties["playerColour"]];
+        //}
+        //else
+        //{
+        //    playerColour = playerColoursArray[0];
+        //}
 
         UpdatePlayerItem(player);
     }
